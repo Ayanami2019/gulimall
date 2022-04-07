@@ -1,9 +1,12 @@
 package com.shigure.gulimall.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 
+import com.shigure.gulimall.product.entity.ProductAttrValueEntity;
+import com.shigure.gulimall.product.service.ProductAttrValueService;
 import com.shigure.gulimall.product.vo.AttrRespVo;
 import com.shigure.gulimall.product.vo.AttrVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,19 @@ import com.shigure.common.utils.R;
 public class AttrController {
     @Autowired
     private AttrService attrService;
+
+    @Autowired
+    private ProductAttrValueService productAttrValueService;
+
+    @GetMapping("/base/listforspu/{spuId}")
+    public R baseAttrlistforspu(@PathVariable("spuId") Long spuId){
+        List<ProductAttrValueEntity> entityList = productAttrValueService.baseAttrlistforspu(spuId);
+
+        return R.ok().put("data",null);
+    }
+
+
+
     @GetMapping("/{attrType}/list/{catelogId}")
     public R baseAttrList(@RequestParam Map<String, Object> params,@PathVariable("catelogId") Long catelogId,@PathVariable("attrType") String type){
        PageUtils page = attrService.queryBaseAttrPage(params,catelogId,type);
@@ -77,6 +93,12 @@ public class AttrController {
     public R update(@RequestBody AttrVo attr){
 		attrService.updateAttr(attr);
 
+        return R.ok();
+    }
+    @PostMapping("/update/{spuId}")
+    public R updateSpuAttr(@PathVariable("spuId") Long spuId,
+                           @RequestBody List<ProductAttrValueEntity> entities){
+        productAttrValueService.updateSpuAttr(spuId,entities);
         return R.ok();
     }
 
